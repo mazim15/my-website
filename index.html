@@ -356,7 +356,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </div>
         <div style="display:flex;flex-direction:column;gap:2px;min-width:0;">
             <span style="font-size:14px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Emergency? Call now!</span>
-            <span style="font-size:18px;font-weight:bold;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">555-809-2011</span>
+            <span style="font-size:18px;font-weight:bold;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{phone}}</span>
         </div>
     </div>
 </rs-layer>
@@ -847,5 +847,32 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 
 		if (window.RS_MODULES.checkMinimal!==undefined) { window.RS_MODULES.checkMinimal();};
 	</script>
+	<script>
+		// Replace these placeholders with your actual Airtable details
+		const API_KEY = "pat6XyijdIxuLEt0B.2701804a257f3fc43a7b47dc4c632177821b04750d7c5d2c58e98b37b82c4ac0"; // Add your generated token here
+		const BASE_ID = "appZMiC31XC1XpoFi"; // Replace with your Airtable Base ID
+		const TABLE_NAME = "Table 1"; // Replace with the name of your table
+	  
+		// Airtable API URL
+		const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`;
+	  
+		// Fetch data from Airtable
+		fetch(url, {
+		  headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		  },
+		})
+		  .then((response) => response.json())
+		  .then((data) => {
+			// Assume we want the phone number from the first record
+			const phone = data.records[0].fields.Phone; // Update 'Phone' to match your Airtable column name
+			// Replace {{phone}} placeholder with the fetched phone number
+			document.body.innerHTML = document.body.innerHTML.replace(/{{phone}}/g, phone);
+		  })
+		  .catch((error) => {
+			console.error("Error fetching data from Airtable:", error);
+		  });
+	  </script>
+	  
 </body>
 </html>
