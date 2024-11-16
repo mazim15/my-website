@@ -848,31 +848,41 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 		if (window.RS_MODULES.checkMinimal!==undefined) { window.RS_MODULES.checkMinimal();};
 	</script>
 	<script>
-		// Replace these placeholders with your actual Airtable details
-		const API_KEY = "pat6XyijdIxuLEt0B.2701804a257f3fc43a7b47dc4c632177821b04750d7c5d2c58e98b37b82c4ac0"; // Add your generated token here
-		const BASE_ID = "appZMiC31XC1XpoFi"; // Replace with your Airtable Base ID
-		const TABLE_NAME = "Table 1"; // Replace with the name of your table
-	  
-		// Airtable API URL
-		const url = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_NAME}`;
-	  
-		// Fetch data from Airtable
-		fetch(url, {
-		  headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		  },
-		})
-		  .then((response) => response.json())
-		  .then((data) => {
-			// Assume we want the phone number from the first record
-			const phone = data.records[0].fields.Phone; // Update 'Phone' to match your Airtable column name
-			// Replace {{phone}} placeholder with the fetched phone number
-			document.body.innerHTML = document.body.innerHTML.replace(/{{phone}}/g, phone);
-		  })
-		  .catch((error) => {
-			console.error("Error fetching data from Airtable:", error);
-		  });
-	  </script>
+        // Your Airtable credentials
+        const AIRTABLE_API_KEY = 'pat6XyijdIxuLEt0B.2701804a257f3fc43a7b47dc4c632177821b04750d7c5d2c58e98b37b82c4ac0';
+        const AIRTABLE_BASE_ID = 'appZMiC31XC1XpoFi';
+        const TABLE_NAME = 'Businesses';
+
+         // Function to replace phone placeholders
+		 function replacePlaceholders(phone) {
+            const walk = document.createTreeWalker(
+                document.body,
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            let node;
+            while (node = walk.nextNode()) {
+                node.textContent = node.textContent.replace(/{{phone}}/g, phone);
+            }
+        }
+
+        // Fetch the first phone number from Airtable
+        fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${TABLE_NAME}`, {
+            headers: {
+                'Authorization': `Bearer ${AIRTABLE_API_KEY}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.records && data.records.length > 0) {
+                const phone = data.records[0].fields.Phone; // Note: 'Phone' matches your column name
+                replacePlaceholders(phone);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    </script>
 	  
 </body>
 </html>
