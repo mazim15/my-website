@@ -12,7 +12,7 @@
 	<link rel="profile" href="https://gmpg.org/xfn/11" />
 	<link rel="pingback" href="https://bridge108.qodeinteractive.com/xmlrpc.php" />
 
-	<title>Bridge | Services</title>
+	<title>{{business_name}} | Services</title>
 <meta name='robots' content='max-image-preview:large' />
 
 <!-- Google Tag Manager for WordPress by gtm4wp.com -->
@@ -213,154 +213,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 			//});
 		  };</script>
 <style type="text/css" data-type="vc_shortcodes-custom-css">.vc_custom_1510651659047{padding-top: 11.5% !important;padding-bottom: 5.5% !important;}.vc_custom_1510582917298{margin-top: -35px !important;}.vc_custom_1510583903086{padding-bottom: 40px !important;}.vc_custom_1510584458004{padding-bottom: 105px !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}</style><noscript><style> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript>
-<script>
-	// Function to get subdomain from URL
-	function getSubdomain() {
-		const hostname = window.location.hostname;
-		
-		// For local testing
-		if (hostname === 'localhost' || hostname === '127.0.0.1') {
-			const urlParams = new URLSearchParams(window.location.search);
-			return urlParams.get('business');
-		}
-	
-		const parts = hostname.split('.');
-		if (parts.length >= 3) {
-			return parts[0];
-		}
-		return null;
-	}
-	
-	// Function to validate Maps URL
-	function validateMapsUrl(url) {
-		try {
-			const mapsUrl = new URL(url);
-			return mapsUrl.hostname.includes('google.com') && 
-				   mapsUrl.pathname.includes('/maps');
-		} catch (e) {
-			console.error('Invalid Maps URL:', e);
-			return false;
-		}
-	}
-	
-	// Function to safely update iframe src
-	function updateMapsIframe(url) {
-		if (!validateMapsUrl(url)) {
-			showError('Invalid Google Maps URL provided');
-			return false;
-		}
-		
-		const mapsIframe = document.querySelector('iframe[src*="google.com/maps"]');
-		if (mapsIframe) {
-			mapsIframe.src = url;
-			return true;
-		}
-		console.warn('Maps iframe not found');
-		return false;
-	}
-	
-	// Function to format phone number (XXX-XXX-XXXX)
-	function formatPhoneNumber(phone) {
-		const cleaned = phone.toString().replace(/\D/g, '');
-		const match = cleaned.match(/^(\d{4})(\d{3})(\d{4})$/);
-		if (match) {
-			return `${match[1]}-${match[2]}-${match[3]}`;
-		}
-		return phone;
-	}
-	
-	// Function to show error message
-	function showError(message) {
-		const errorDiv = document.getElementById('error-message') || document.createElement('div');
-		errorDiv.id = 'error-message';
-		errorDiv.style.cssText = 'background: #fee; color: #c00; padding: 10px; margin: 10px 0; border-radius: 4px;';
-		errorDiv.textContent = message;
-		
-		if (!document.getElementById('error-message')) {
-			document.body.insertBefore(errorDiv, document.body.firstChild);
-		}
-	}
-	
-	// Function to fetch business data from Netlify function
-	async function fetchBusinessData() {
-		const subdomain = getSubdomain();
-		if (!subdomain) {
-			showError('No business subdomain detected');
-			return null;
-		}
-	
-		try {
-			const response = await fetch(`/.netlify/functions/get-business-data?business=${encodeURIComponent(subdomain)}`);
-			
-			if (!response.ok) {
-				if (response.status === 404) {
-					showError(`Business "${subdomain}" not found`);
-				} else {
-					showError('Failed to load business data');
-				}
-				return null;
-			}
-			
-			const data = await response.json();
-			
-			// Format phone number if present
-			if (data.phone) {
-				data.phone = formatPhoneNumber(data.phone);
-			}
-			
-			// Validate maps_url if present
-			if (data.maps_url && !validateMapsUrl(data.maps_url)) {
-				console.warn('Invalid maps_url in business data');
-				data.maps_url = null;
-			}
-			
-			return data;
-		} catch (error) {
-			console.error('Error fetching business data:', error);
-			showError('Unable to load business data. Please try again later.');
-			return null;
-		}
-	}
-	
-	// Function to replace content on the page
-	function replaceContent(data) {
-		if (!data) return;
-	
-		// Replace any text containing {{field_name}}
-		const walk = document.createTreeWalker(
-			document.body,
-			NodeFilter.SHOW_TEXT,
-			null,
-			false
-		);
-	
-		let node;
-		while (node = walk.nextNode()) {
-			Object.keys(data).forEach(key => {
-				const placeholder = `{{${key}}}`;
-				if (node.textContent.includes(placeholder)) {
-					node.textContent = node.textContent.replace(
-						new RegExp(placeholder, 'g'), 
-						data[key] || ''
-					);
-				}
-			});
-		}
-	
-		// Update Google Maps iframe if maps_url exists
-		if (data.maps_url) {
-			updateMapsIframe(data.maps_url);
-		}
-	}
-	
-	// Initialize when DOM is loaded
-	document.addEventListener('DOMContentLoaded', async () => {
-		const businessData = await fetchBusinessData();
-		if (businessData) {
-			replaceContent(businessData);
-		}
-	});
-	</script>
+
 </head>
 
 <body class="page-template page-template-full_width page-template-full_width-php page page-id-148 bridge-core-3.0.5 qodef-qi--no-touch qi-addons-for-elementor-1.5.5  qode-title-hidden qode_grid_1300 side_area_uncovered_from_content qode-theme-ver-29.2 qode-theme-bridge disabled_footer_bottom qode_header_in_grid wpb-js-composer js-comp-ver-6.10.0 vc_responsive elementor-default elementor-kit-222" itemscope itemtype="http://schema.org/WebPage">
@@ -753,5 +606,73 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 /* ]]> */
 </script>
 <script type='text/javascript' src='https://bridge108.qodeinteractive.com/wp-content/themes/bridge/js/plugins/qode-like.min.js?ver=6.1.7' id='qode-like-js'></script>
+
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	  // Get the subdomain
+	  var subdomain = getSubdomain();
+	  if (!subdomain) {
+		console.error('No subdomain detected.');
+		return;
+	  }
+	
+	  // Fetch data from the serverless function
+	  fetch('/.netlify/functions/getBusinessData?subdomain=' + subdomain)
+		.then(response => {
+		  if (!response.ok) {
+			throw new Error('Network response was not ok: ' + response.statusText);
+		  }
+		  return response.json();
+		})
+		.then(business => {
+		  // Replace placeholders with business data
+		  replacePlaceholders(business);
+		})
+		.catch(error => {
+		  console.error('Error fetching business data:', error);
+		});
+	
+	  // Function to get subdomain
+	  function getSubdomain() {
+		var host = window.location.hostname;
+		var parts = host.split('.');
+		if (parts.length > 2) {
+		  // Assuming the domain is like subdomain.example.com
+		  return parts[0];
+		} else {
+		  // No subdomain present
+		  return null;
+		}
+	  }
+	
+	  // Function to replace placeholders
+	  function replacePlaceholders(business) {
+		// Create a regex to find all placeholders like {{key}}
+		var regex = /\{\{(\w+)\}\}/g;
+	
+		// Function to replace placeholders in a given element
+		function replaceInElement(element) {
+		  if (element.hasChildNodes()) {
+			element.childNodes.forEach(replaceInElement);
+		  }
+		  if (element.nodeType === Node.TEXT_NODE) {
+			element.textContent = element.textContent.replace(regex, (match, key) => {
+			  return business[key] || match;
+			});
+		  } else if (element.nodeType === Node.ELEMENT_NODE) {
+			// Replace attributes like src, href, title, etc.
+			Array.from(element.attributes).forEach(attr => {
+			  attr.value = attr.value.replace(regex, (match, key) => {
+				return business[key] || match;
+			  });
+			});
+		  }
+		}
+	
+		// Start from the document element to include both <head> and <body>
+		replaceInElement(document.documentElement);
+	  }
+	});
+	</script>
 </body>
 </html>
