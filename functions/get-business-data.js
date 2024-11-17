@@ -12,11 +12,12 @@ exports.handler = async (event) => {
     const headers = {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'GET'
+        'Access-Control-Allow-Methods': 'GET',
+        'Content-Type': 'application/json'
     };
 
     try {
-        // Get business parameter
+        // Get subdomain parameter
         let { business } = event.queryStringParameters || {};
         business = sanitizeInput(business);
 
@@ -24,7 +25,7 @@ exports.handler = async (event) => {
             return {
                 statusCode: 400,
                 headers,
-                body: JSON.stringify({ error: 'Business parameter is required' })
+                body: JSON.stringify({ error: 'Business identifier required' })
             };
         }
 
@@ -38,9 +39,10 @@ exports.handler = async (event) => {
         });
 
         // Find matching business
-        const matchingBusiness = records.find(record => 
-            sanitizeInput(record.business_name) === business
-        );
+        const matchingBusiness = records.find(record => {
+            const csvSubdomain = record.subdomain.split('.')[0];
+            return sanitizeInput(csvSubdomain) === business;
+        });
 
         if (!matchingBusiness) {
             return {
@@ -53,10 +55,18 @@ exports.handler = async (event) => {
             };
         }
 
+        // Return only the needed fields
+        const responseData = {
+            business_name: matchingBusiness.business_name,
+            phone: matchingBusiness.phone,
+            address: matchingBusiness.address,
+            maps_url: matchingBusiness.maps_url
+        };
+
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify(matchingBusiness)
+            body: JSON.stringify(responseData)
         };
 
     } catch (error) {

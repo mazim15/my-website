@@ -1,8 +1,17 @@
 [build]
   functions = "functions"
-  publish = "."
+  publish = "public"
 
-[functions]
-  directory = "functions"
-  node_bundler = "esbuild"
-  included_files = ["functions/businesses.csv"]
+# Main redirect for all routes to our function
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/handleSubdomain"
+  status = 200
+  force = true
+
+# Handle www subdomain redirect
+[[redirects]]
+  from = "https://www.*"
+  to = "https://:splat"
+  status = 301
+  force = true
