@@ -1,4 +1,8 @@
 [build]
+  command = """
+    mkdir -p public
+    echo '<html><body></body></html>' > public/index.html
+  """
   functions = "functions"
   publish = "public"
 
