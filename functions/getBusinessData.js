@@ -16,7 +16,7 @@ exports.handler = async function(event, context) {
 
   try {
     // Read the CSV file
-    const csvFilePath = path.resolve(__dirname, '../businesses.csv');
+    const csvFilePath = path.resolve(__dirname, './businesses.csv');
     const file = fs.readFileSync(csvFilePath, 'utf8');
 
     // Parse the CSV data
