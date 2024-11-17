@@ -1,3 +1,6 @@
 [build]
   publish = "."
   functions = "functions"
+
+[functions]
+  included_files = ["functions/businesses.csv"]
