@@ -154,14 +154,22 @@ exports.handler = async (event) => {
                 target: 'url',
                 constraint: {
                   operator: 'matches',
-                  value: `${subdomain}.${DOMAIN}/*`
+                  value: `*${subdomain}.${DOMAIN}/*`
                 }
               }
             ],
-            actions: {
-              cache_level: 'cache_everything',
-              edge_cache_ttl: 2629746 // Cache for 1 month
-            }
+            actions: [
+              {
+                id: 'cache_level',
+                value: 'cache_everything'
+              },
+              {
+                id: 'edge_cache_ttl',
+                value: 2629746
+              }
+            ],
+            status: 'active',
+            priority: 1
           }
         );
 
