@@ -344,54 +344,60 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     id="slider-1-slide-1-layer-4" 
     data-type="text"
     data-rsp_ch="on"
-    data-xy="xo:32px,26px,-28px,17px;yo:108px,89px,82px,34px;"
+    data-xy="xo:32px,26px,10px,10px;yo:108px,89px,82px,34px;"
     data-text="w:normal;l:22;a:inherit;"
     data-dim="w:353px,300px,260px,220px;h:auto;"
     data-frame_0="y:30px;tp:600;"
     data-frame_1="tp:600;e:back.inOut;st:1300;sp:500;sR:1300;"
     data-frame_999="o:0;tp:600;st:w;sR:3200;"
-    style="z-index:7;background-color:#ffffff;border-radius:12px;box-shadow:0 2px 4px rgba(0,0,0,0.1);padding:15px;min-height:60px;"
+    style="z-index:7;background: linear-gradient(135deg, #ff7e5f, #feb47b); border-radius:12px;box-shadow:0 4px 8px rgba(0,0,0,0.2);padding:20px;min-height:60px;"
 >
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:nowrap;">
-        <div style="background-color:#ff4444;min-width:36px;min-height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 22C10.8954 22 10 21.1046 10 20V10C10 8.89543 10.8954 8 12 8C13.1046 8 14 8.89543 14 10V20C14 21.1046 13.1046 22 12 22Z" fill="white"/>
-                <path d="M12 6C10.8954 6 10 5.10457 10 4C10 2.89543 10.8954 2 12 2C13.1046 2 14 2.89543 14 4C14 5.10457 13.1046 6 12 6Z" fill="white"/>
+        <div style="background-color:#ffffff;min-width:40px;min-height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#ff4444" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C10.8954 22 10 21.1046 10 20V10C10 8.89543 10.8954 8 12 8C13.1046 8 14 8.89543 14 10V20C14 21.1046 13.1046 22 12 22Z"/>
+                <path d="M12 6C10.8954 6 10 5.10457 10 4C10 2.89543 10.8954 2 12 2C13.1046 2 14 2.89543 14 4C14 5.10457 13.1046 6 12 6Z"/>
             </svg>
         </div>
-        <div style="display:flex;flex-direction:column;gap:2px;min-width:0;">
-            <span style="font-size:14px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Emergency? Call now!</span>
-            <span style="font-size:18px;font-weight:bold;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{phone}}{{business_name}}{{address}}</span>
+        <div style="display:flex;flex-direction:column;gap:4px;min-width:0;">
+            <span style="font-size:16px;color:#ffffff;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Emergency? Call now!</span>
+            <span style="font-size:24px;font-weight:bold;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{phone}}</span>
         </div>
     </div>
 </rs-layer>
-<style>
-rs-layer#slider-1-slide-1-layer-4::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 25px;
-    border-width: 12px 12px 0;
-    border-style: solid;
-    border-color: #ffffff transparent transparent;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
-}
 
-@media screen and (max-width: 768px) {
-    rs-layer#slider-1-slide-1-layer-4 {
-        padding: 12px !important;
-        max-width: 220px !important;
-    }
-    rs-layer#slider-1-slide-1-layer-4 .text-content {
-        font-size: 12px !important;
-    }
-    rs-layer#slider-1-slide-1-layer-4::after {
-        left: 20px;
-        border-width: 10px 10px 0;
-        bottom: -10px;
-    }
-}
-</style><!--
+<style>
+	rs-layer#slider-1-slide-1-layer-4::after {
+		content: '';
+		position: absolute;
+		bottom: -12px;
+		left: 25px;
+		border-width: 12px 12px 0;
+		border-style: solid;
+		border-color: transparent transparent transparent;
+		border-top-color: inherit;
+		filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2));
+	}
+	
+	@media screen and (max-width: 768px) {
+		rs-layer#slider-1-slide-1-layer-4 {
+			padding: 15px !important;
+			max-width: 280px !important;
+		}
+		rs-layer#slider-1-slide-1-layer-4 div span {
+			font-size: 14px !important;
+		}
+		rs-layer#slider-1-slide-1-layer-4 div span:nth-child(2) {
+			font-size: 18px !important;
+		}
+		rs-layer#slider-1-slide-1-layer-4::after {
+			left: 20px;
+			border-width: 10px 10px 0;
+			bottom: -10px;
+		}
+	}
+	</style>
+	<!--
 
 							--><rs-layer
 								id="slider-1-slide-1-layer-5" 
