@@ -225,6 +225,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
 }</style><style type="text/css" data-type="vc_shortcodes-custom-css">.vc_custom_1510651331816{margin-bottom: -11% !important;padding-top: 50px !important;}.vc_custom_1510585654368{padding-bottom: 100px !important;}.vc_custom_1510587492401{margin-top: -18% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510565495145{margin-top: -8% !important;}.vc_custom_1510568338951{padding-top: 8.5% !important;padding-bottom: 8.5% !important;}.vc_custom_1510585847654{margin-top: -15% !important;}.vc_custom_1510585856028{margin-top: -15% !important;}</style><noscript><style> .wpb_animate_when_almost_visible { opacity: 1; }</style></noscript>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 
 </head>
 
@@ -851,6 +852,85 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 		if (window.RS_MODULES.checkMinimal!==undefined) { window.RS_MODULES.checkMinimal();};
 	</script>
 	
-	  
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			// Step 1: Get the subdomain
+			var subdomain = getSubdomain();
+			if (!subdomain) {
+				console.error('No subdomain detected.');
+				return;
+			}
+		
+			// Step 2: Fetch and parse the CSV file
+			fetch('/businesses.csv')
+				.then(response => response.text())
+				.then(csvText => {
+					var data = Papa.parse(csvText, {
+						header: true,
+						skipEmptyLines: true
+					}).data;
+		
+					// Step 3: Find the matching business data
+					var business = findBusinessData(subdomain, data);
+		
+					if (business) {
+						// Step 4: Replace placeholders in the HTML
+						replacePlaceholders(business);
+					} else {
+						console.error('Business not found for subdomain:', subdomain);
+					}
+				})
+				.catch(error => {
+					console.error('Error fetching or parsing businesses.csv:', error);
+				});
+		
+			// Function to get subdomain
+			function getSubdomain() {
+				var host = window.location.hostname;
+				var parts = host.split('.');
+				if (parts.length > 2) {
+					// Assuming the domain is like subdomain.example.com
+					return parts[0];
+				} else {
+					// No subdomain present
+					return null;
+				}
+			}
+		
+			// Function to find business data
+			function findBusinessData(subdomain, data) {
+				return data.find(business => business.subdomain === subdomain);
+			}
+		
+			// Function to replace placeholders
+			function replacePlaceholders(business) {
+				// Create a regex to find all placeholders like {{key}}
+				var regex = /\{\{(\w+)\}\}/g;
+		
+				// Function to replace placeholders in a given element
+				function replaceInElement(element) {
+					if (element.hasChildNodes()) {
+						element.childNodes.forEach(replaceInElement);
+					}
+					if (element.nodeType === Node.TEXT_NODE) {
+						element.textContent = element.textContent.replace(regex, (match, key) => {
+							return business[key] || match;
+						});
+					} else if (element.nodeType === Node.ELEMENT_NODE) {
+						// Replace attributes like src
+						Array.from(element.attributes).forEach(attr => {
+							attr.value = attr.value.replace(regex, (match, key) => {
+								return business[key] || match;
+							});
+						});
+					}
+				}
+		
+				// Start from the body element
+				replaceInElement(document.body);
+			}
+		});
+		</script>
+		
 </body>
 </html>
