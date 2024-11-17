@@ -1,5 +1,4 @@
 const Airtable = require('airtable');
-const cloudflare = require('cloudflare');
 
 // Initialize Airtable
 const base = new Airtable({
@@ -8,6 +7,32 @@ const base = new Airtable({
 
 const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // Removed https:// as it's not needed for DNS
 const DOMAIN = 'gowso.online'; // Removed https:// as it's not needed for DNS
+const CF_API_BASE = 'https://api.cloudflare.com/client/v4';
+
+// Helper function for Cloudflare API calls
+async function cfApiCall(endpoint, method = 'GET', data = null) {
+  const url = `${CF_API_BASE}${endpoint}`;
+  const options = {
+    method,
+    headers: {
+      'Authorization': `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
+  };
+  
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+
+  const response = await fetch(url, options);
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(`Cloudflare API error: ${result.errors[0].message}`);
+  }
+
+  return result.result;
+}
 
 exports.handler = async (event) => {
   // Only allow POST requests
@@ -39,22 +64,15 @@ exports.handler = async (event) => {
       throw new Error('NETLIFY_ACCESS_TOKEN is not set');
     }
 
-    console.log('Initializing Cloudflare client...');
+    console.log('Testing Cloudflare API connection...');
     
-    // Initialize Cloudflare with better error handling
-    const cf = new cloudflare({
-      token: process.env.CLOUDFLARE_API_TOKEN
-    });
-
-    // Test Cloudflare client by trying to list zones
-    console.log('Testing Cloudflare client...');
+    // Test Cloudflare API by getting zone details
     try {
-      const zones = await cf.zones.read(process.env.CLOUDFLARE_ZONE_ID);
-      console.log('Cloudflare client initialized successfully');
-      console.log('Zone info:', zones);
+      const zoneDetails = await cfApiCall(`/zones/${process.env.CLOUDFLARE_ZONE_ID}`);
+      console.log('Cloudflare API connection successful:', zoneDetails.name);
     } catch (error) {
-      console.error('Error testing Cloudflare client:', error);
-      throw new Error(`Failed to test Cloudflare client: ${error.message}`);
+      console.error('Error testing Cloudflare API:', error);
+      throw new Error(`Failed to test Cloudflare API: ${error.message}`);
     }
 
     console.log('Fetching records from Airtable...');
@@ -111,33 +129,41 @@ exports.handler = async (event) => {
 
         console.log(`Creating DNS record for ${subdomain}.${DOMAIN}`);
 
-        // Create DNS record in Cloudflare using zones API
-        const dnsResult = await cf.zones.dnsRecords.add(process.env.CLOUDFLARE_ZONE_ID, {
-          type: 'CNAME',
-          name: subdomain,
-          content: NETLIFY_SITE_URL,
-          proxied: true,
-          ttl: 1
-        });
+        // Create DNS record in Cloudflare
+        const dnsResult = await cfApiCall(
+          `/zones/${process.env.CLOUDFLARE_ZONE_ID}/dns_records`,
+          'POST',
+          {
+            type: 'CNAME',
+            name: subdomain,
+            content: NETLIFY_SITE_URL,
+            proxied: true,
+            ttl: 1
+          }
+        );
 
         console.log('DNS record created:', dnsResult);
 
-        // Create page rule for caching using zones API
-        const pageRuleResult = await cf.zones.pageRules.add(process.env.CLOUDFLARE_ZONE_ID, {
-          targets: [
-            {
-              target: 'url',
-              constraint: {
-                operator: 'matches',
-                value: `${subdomain}.${DOMAIN}/*`
+        // Create page rule for caching
+        const pageRuleResult = await cfApiCall(
+          `/zones/${process.env.CLOUDFLARE_ZONE_ID}/pagerules`,
+          'POST',
+          {
+            targets: [
+              {
+                target: 'url',
+                constraint: {
+                  operator: 'matches',
+                  value: `${subdomain}.${DOMAIN}/*`
+                }
               }
+            ],
+            actions: {
+              cache_level: 'cache_everything',
+              edge_cache_ttl: 2629746 // Cache for 1 month
             }
-          ],
-          actions: {
-            cache_level: 'cache_everything',
-            edge_cache_ttl: 2629746 // Cache for 1 month
           }
-        });
+        );
 
         console.log('Page rule created:', pageRuleResult);
 
