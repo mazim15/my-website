@@ -6,10 +6,18 @@ const base = new Airtable({
   apiKey: process.env.AIRTABLE_API_KEY
 }).base(process.env.AIRTABLE_BASE_ID);
 
-// Initialize Cloudflare
-const cf = new cloudflare({
-  token: process.env.CLOUDFLARE_API_TOKEN
-});
+// Initialize Cloudflare with better error handling
+let cf;
+try {
+  cf = new cloudflare({
+    token: process.env.CLOUDFLARE_API_TOKEN
+  });
+  if (!cf || !cf.dnsRecords) {
+    throw new Error('Cloudflare client not properly initialized');
+  }
+} catch (error) {
+  console.error('Error initializing Cloudflare:', error);
+}
 
 const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // Removed https:// as it's not needed for DNS
 const DOMAIN = 'gowso.online'; // Removed https:// as it's not needed for DNS
@@ -24,6 +32,11 @@ exports.handler = async (event) => {
   }
 
   try {
+    // Validate Cloudflare initialization
+    if (!cf || !cf.dnsRecords) {
+      throw new Error('Cloudflare client not properly initialized. Please check CLOUDFLARE_API_TOKEN.');
+    }
+
     console.log('Fetching records from Airtable...');
     
     // Get all businesses from Airtable that don't have subdomains yet
@@ -47,42 +60,39 @@ exports.handler = async (event) => {
     const results = [];
 
     for (let record of records) {
-      // Validate record fields
-      const businessName = record.get('business_name');
-      const address = record.get('address');
-      const phone = record.get('phone');
-      const mapsUrl = record.get('maps_url');
-
-      if (!businessName) {
-        console.error(`Missing business name for record ${record.id}`);
-        results.push({
-          record_id: record.id,
-          error: 'Missing business name',
-          status: 'failed'
-        });
-        continue;
-      }
-
-      // Get business details from Airtable
-      const businessData = {
-        name: businessName,
-        address: address || '',
-        phone: phone || '',
-        maps: mapsUrl || '',
-      };
-
-      // Create subdomain-safe business name
-      const subdomain = businessData.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, '-') // Replace non-alphanumeric with hyphens
-        .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
-        .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
-
       try {
-        console.log(`Processing business: ${businessData.name} (${subdomain})`);
+        // Get business details from Airtable with detailed logging
+        const businessName = record.get('business_name');
+        console.log('Processing record:', record.id, 'Business name:', businessName);
+
+        if (!businessName) {
+          console.error(`Missing business name for record ${record.id}`);
+          results.push({
+            record_id: record.id,
+            error: 'Missing business name',
+            status: 'failed'
+          });
+          continue;
+        }
+
+        const businessData = {
+          name: businessName,
+          address: record.get('address') || '',
+          phone: record.get('phone') || '',
+          maps: record.get('maps_url') || '',
+        };
+
+        // Create subdomain-safe business name
+        const subdomain = businessData.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, '-') // Replace non-alphanumeric with hyphens
+          .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
+          .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
+
+        console.log(`Creating DNS record for ${subdomain}.${DOMAIN}`);
 
         // Create DNS record in Cloudflare
-        await cf.dnsRecords.add(process.env.CLOUDFLARE_ZONE_ID, {
+        const dnsResult = await cf.dnsRecords.add(process.env.CLOUDFLARE_ZONE_ID, {
           type: 'CNAME',
           name: subdomain,
           content: NETLIFY_SITE_URL,
@@ -90,10 +100,10 @@ exports.handler = async (event) => {
           ttl: 1
         });
 
-        console.log(`Created DNS record for ${subdomain}.${DOMAIN}`);
+        console.log('DNS record created:', dnsResult);
 
-        // Optional: Create page rule for caching
-        await cf.pageRules.create(process.env.CLOUDFLARE_ZONE_ID, {
+        // Create page rule for caching
+        const pageRuleResult = await cf.pageRules.create(process.env.CLOUDFLARE_ZONE_ID, {
           targets: [
             {
               target: 'url',
@@ -109,7 +119,7 @@ exports.handler = async (event) => {
           }
         });
 
-        console.log(`Created page rule for ${subdomain}.${DOMAIN}`);
+        console.log('Page rule created:', pageRuleResult);
 
         // Store business data in Netlify environment variables
         const envVars = {
@@ -121,7 +131,7 @@ exports.handler = async (event) => {
 
         // Create environment variables in Netlify
         for (const [key, value] of Object.entries(envVars)) {
-          await fetch(`https://api.netlify.com/api/v1/sites/${process.env.NETLIFY_SITE_ID}/env/${key}`, {
+          const response = await fetch(`https://api.netlify.com/api/v1/sites/${process.env.NETLIFY_SITE_ID}/env/${key}`, {
             method: 'PUT',
             headers: {
               'Authorization': `Bearer ${process.env.NETLIFY_ACCESS_TOKEN}`,
@@ -129,6 +139,10 @@ exports.handler = async (event) => {
             },
             body: JSON.stringify({ value })
           });
+
+          if (!response.ok) {
+            throw new Error(`Failed to set Netlify environment variable ${key}: ${response.statusText}`);
+          }
         }
 
         console.log(`Created environment variables for ${subdomain}`);
@@ -148,9 +162,9 @@ exports.handler = async (event) => {
         });
 
       } catch (error) {
-        console.error(`Error processing ${businessData.name}:`, error);
+        console.error(`Error processing record ${record.id}:`, error);
         results.push({
-          business: businessData.name,
+          business: record.get('business_name') || record.id,
           error: error.message,
           status: 'failed'
         });
