@@ -10,6 +10,9 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "netlify-cli": "^17.37.2"
+    "airtable": "^0.12.2",
+    "cloudflare": "^3.5.0",
+    "netlify-cli": "^17.37.2",
+    "node-fetch": "^3.3.2"
   }
 }
