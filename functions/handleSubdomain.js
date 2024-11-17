@@ -1,4 +1,3 @@
-// functions/handleSubdomain.js
 const fs = require('fs');
 const csv = require('csv-parse/sync');
 const path = require('path');
@@ -23,30 +22,39 @@ exports.handler = async (event, context) => {
     if (!business) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ 
-          error: 'Business not found',
-          message: `No business found for subdomain: ${subdomain}`
-        })
+        headers: {
+          'Content-Type': 'text/html'
+        },
+        body: '<h1>Business Not Found</h1><p>The requested business page does not exist.</p>'
       };
     }
 
-    // Return just the business data
+    // Read the HTML template
+    const templatePath = path.join(__dirname, '..', 'public', 'index.html');
+    let htmlContent = fs.readFileSync(templatePath, 'utf-8');
+
+    // Replace template variables
+    htmlContent = htmlContent.replace(/{{business_name}}/g, business.business_name);
+    htmlContent = htmlContent.replace(/{{phone}}/g, business.phone);
+    htmlContent = htmlContent.replace(/{{address}}/g, business.address);
+    htmlContent = htmlContent.replace(/{{maps_url}}/g, business.maps_url);
+
     return {
       statusCode: 200,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/html',
         'Cache-Control': 'public, max-age=300'
       },
-      body: JSON.stringify(business)
+      body: htmlContent
     };
   } catch (error) {
     console.error('Function error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        error: 'Internal server error',
-        message: error.message
-      })
+      headers: {
+        'Content-Type': 'text/html'
+      },
+      body: '<h1>Server Error</h1><p>Sorry, something went wrong.</p>'
     };
   }
 };

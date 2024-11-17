@@ -2,14 +2,12 @@
   functions = "functions"
   publish = "public"
 
-# Main redirect for all routes to our function
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/handleSubdomain"
   status = 200
   force = true
 
-# Handle www subdomain redirect
 [[redirects]]
   from = "https://www.*"
   to = "https://:splat"
