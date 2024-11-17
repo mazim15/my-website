@@ -1,4 +1,4 @@
-// getBusinessData.js
+// functions/getBusinessData.js
 
 const fs = require('fs');
 const path = require('path');
@@ -11,12 +11,16 @@ exports.handler = async function(event, context) {
     return {
       statusCode: 400,
       body: JSON.stringify({ error: 'Subdomain parameter is required' }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*', // Add this line
+      },
     };
   }
 
   try {
-    // Read the CSV file
-    const csvFilePath = path.resolve(__dirname, './businesses.csv');
+    // Adjust the path as needed
+    const csvFilePath = path.join(__dirname, 'businesses.csv');
     const file = fs.readFileSync(csvFilePath, 'utf8');
 
     // Parse the CSV data
@@ -36,19 +40,28 @@ exports.handler = async function(event, context) {
         body: JSON.stringify(business),
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*', // Add this line
         },
       };
     } else {
       return {
         statusCode: 404,
         body: JSON.stringify({ error: 'Business not found' }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*', // Add this line
+        },
       };
     }
   } catch (error) {
-    console.error('Error reading or parsing CSV file:', error);
+    console.error('Error in getBusinessData function:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: 'Internal Server Error' }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*', // Add this line
+      },
     };
   }
 };
