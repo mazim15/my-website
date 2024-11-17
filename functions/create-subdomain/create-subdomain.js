@@ -5,8 +5,8 @@ const base = new Airtable({
   apiKey: process.env.AIRTABLE_API_KEY
 }).base(process.env.AIRTABLE_BASE_ID);
 
-const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // Removed https:// as it's not needed for DNS
-const DOMAIN = 'gowso.online'; // Removed https:// as it's not needed for DNS
+const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // The Netlify site URL to point to
+const DOMAIN = 'gowso.online'; // The domain for subdomains
 const CF_API_BASE = 'https://api.cloudflare.com/client/v4';
 
 // Helper function for Cloudflare API calls
@@ -34,6 +34,33 @@ async function cfApiCall(endpoint, method = 'GET', data = null) {
   return result.result;
 }
 
+// Helper function to check if DNS record exists
+async function getDnsRecord(zoneId, name) {
+  try {
+    const records = await cfApiCall(`/zones/${zoneId}/dns_records?name=${name}.${DOMAIN}`);
+    return records.length > 0 ? records[0] : null;
+  } catch (error) {
+    console.error('Error checking DNS record:', error);
+    return null;
+  }
+}
+
+// Helper function to delete existing page rules for a subdomain
+async function deleteExistingPageRules(zoneId, subdomain) {
+  try {
+    const rules = await cfApiCall(`/zones/${zoneId}/pagerules`);
+    const subdomainRules = rules.filter(rule => 
+      rule.targets[0].constraint.value.includes(`${subdomain}.${DOMAIN}`)
+    );
+    
+    for (const rule of subdomainRules) {
+      await cfApiCall(`/zones/${zoneId}/pagerules/${rule.id}`, 'DELETE');
+    }
+  } catch (error) {
+    console.error('Error deleting existing page rules:', error);
+  }
+}
+
 exports.handler = async (event) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -45,23 +72,19 @@ exports.handler = async (event) => {
 
   try {
     // Validate environment variables
-    if (!process.env.CLOUDFLARE_API_TOKEN) {
-      throw new Error('CLOUDFLARE_API_TOKEN is not set');
-    }
-    if (!process.env.CLOUDFLARE_ZONE_ID) {
-      throw new Error('CLOUDFLARE_ZONE_ID is not set');
-    }
-    if (!process.env.AIRTABLE_API_KEY) {
-      throw new Error('AIRTABLE_API_KEY is not set');
-    }
-    if (!process.env.AIRTABLE_BASE_ID) {
-      throw new Error('AIRTABLE_BASE_ID is not set');
-    }
-    if (!process.env.NETLIFY_SITE_ID) {
-      throw new Error('NETLIFY_SITE_ID is not set');
-    }
-    if (!process.env.NETLIFY_ACCESS_TOKEN) {
-      throw new Error('NETLIFY_ACCESS_TOKEN is not set');
+    const requiredEnvVars = {
+      CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN,
+      CLOUDFLARE_ZONE_ID: process.env.CLOUDFLARE_ZONE_ID,
+      AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
+      AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
+      NETLIFY_SITE_ID: process.env.NETLIFY_SITE_ID,
+      NETLIFY_ACCESS_TOKEN: process.env.NETLIFY_ACCESS_TOKEN
+    };
+
+    for (const [key, value] of Object.entries(requiredEnvVars)) {
+      if (!value) {
+        throw new Error(`${key} is not set`);
+      }
     }
 
     console.log('Testing Cloudflare API connection...');
@@ -127,22 +150,46 @@ exports.handler = async (event) => {
           .replace(/-+/g, '-')        // Replace multiple hyphens with single hyphen
           .replace(/^-|-$/g, '');     // Remove leading/trailing hyphens
 
-        console.log(`Creating DNS record for ${subdomain}.${DOMAIN}`);
+        console.log(`Processing DNS record for ${subdomain}.${DOMAIN}`);
 
-        // Create DNS record in Cloudflare
-        const dnsResult = await cfApiCall(
-          `/zones/${process.env.CLOUDFLARE_ZONE_ID}/dns_records`,
-          'POST',
-          {
-            type: 'CNAME',
-            name: subdomain,
-            content: NETLIFY_SITE_URL,
-            proxied: true,
-            ttl: 1
-          }
-        );
+        // Check if DNS record already exists
+        const existingRecord = await getDnsRecord(process.env.CLOUDFLARE_ZONE_ID, subdomain);
+        
+        let dnsResult;
+        if (existingRecord) {
+          console.log('Updating existing DNS record');
+          // Update existing record
+          dnsResult = await cfApiCall(
+            `/zones/${process.env.CLOUDFLARE_ZONE_ID}/dns_records/${existingRecord.id}`,
+            'PUT',
+            {
+              type: 'CNAME',
+              name: subdomain,
+              content: NETLIFY_SITE_URL,
+              proxied: true,
+              ttl: 1
+            }
+          );
+        } else {
+          console.log('Creating new DNS record');
+          // Create new record
+          dnsResult = await cfApiCall(
+            `/zones/${process.env.CLOUDFLARE_ZONE_ID}/dns_records`,
+            'POST',
+            {
+              type: 'CNAME',
+              name: subdomain,
+              content: NETLIFY_SITE_URL,
+              proxied: true,
+              ttl: 1
+            }
+          );
+        }
 
-        console.log('DNS record created:', dnsResult);
+        console.log('DNS record processed:', dnsResult);
+
+        // Delete any existing page rules for this subdomain
+        await deleteExistingPageRules(process.env.CLOUDFLARE_ZONE_ID, subdomain);
 
         // Create page rule for caching
         const pageRuleResult = await cfApiCall(
@@ -240,8 +287,8 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         error: 'Failed to process businesses',
         details: error.message,
-        stack: error.stack, // Include stack trace for debugging
-        env: { // Include environment variable status (but not values) for debugging
+        stack: error.stack,
+        env: {
           CLOUDFLARE_API_TOKEN: !!process.env.CLOUDFLARE_API_TOKEN,
           CLOUDFLARE_ZONE_ID: !!process.env.CLOUDFLARE_ZONE_ID,
           AIRTABLE_API_KEY: !!process.env.AIRTABLE_API_KEY,
