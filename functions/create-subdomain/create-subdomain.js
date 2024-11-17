@@ -8,6 +8,7 @@ const base = new Airtable({
 const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // The Netlify site URL to point to
 const DOMAIN = 'gowso.online'; // The domain for subdomains
 const CF_API_BASE = 'https://api.cloudflare.com/client/v4';
+const NETLIFY_API_BASE = 'https://api.netlify.com/api/v1';
 
 // Helper function for Cloudflare API calls
 async function cfApiCall(endpoint, method = 'GET', data = null) {
@@ -61,6 +62,33 @@ async function deleteExistingPageRules(zoneId, subdomain) {
   }
 }
 
+// Helper function to set Netlify environment variables
+async function setNetlifyEnvVars(siteId, variables) {
+  const url = `${NETLIFY_API_BASE}/accounts/${process.env.NETLIFY_ACCOUNT_ID}/env`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.NETLIFY_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      site_id: siteId,
+      values: Object.entries(variables).map(([key, value]) => ({
+        key,
+        value,
+        context: 'all'
+      }))
+    })
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to set Netlify environment variables: ${error}`);
+  }
+
+  return response.json();
+}
+
 exports.handler = async (event) => {
   // Only allow POST requests
   if (event.httpMethod !== 'POST') {
@@ -78,7 +106,8 @@ exports.handler = async (event) => {
       AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
       AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
       NETLIFY_SITE_ID: process.env.NETLIFY_SITE_ID,
-      NETLIFY_ACCESS_TOKEN: process.env.NETLIFY_ACCESS_TOKEN
+      NETLIFY_ACCESS_TOKEN: process.env.NETLIFY_ACCESS_TOKEN,
+      NETLIFY_ACCOUNT_ID: process.env.NETLIFY_ACCOUNT_ID
     };
 
     for (const [key, value] of Object.entries(requiredEnvVars)) {
@@ -230,22 +259,8 @@ exports.handler = async (event) => {
           [`BUSINESS_MAPS_${subdomain}`]: businessData.maps
         };
 
-        // Create environment variables in Netlify
-        for (const [key, value] of Object.entries(envVars)) {
-          const response = await fetch(`https://api.netlify.com/api/v1/sites/${process.env.NETLIFY_SITE_ID}/env/${key}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `Bearer ${process.env.NETLIFY_ACCESS_TOKEN}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ value })
-          });
-
-          if (!response.ok) {
-            throw new Error(`Failed to set Netlify environment variable ${key}: ${response.statusText}`);
-          }
-        }
-
+        // Set environment variables in Netlify
+        await setNetlifyEnvVars(process.env.NETLIFY_SITE_ID, envVars);
         console.log(`Created environment variables for ${subdomain}`);
 
         // Update Airtable record to mark subdomain as created
@@ -294,7 +309,8 @@ exports.handler = async (event) => {
           AIRTABLE_API_KEY: !!process.env.AIRTABLE_API_KEY,
           AIRTABLE_BASE_ID: !!process.env.AIRTABLE_BASE_ID,
           NETLIFY_SITE_ID: !!process.env.NETLIFY_SITE_ID,
-          NETLIFY_ACCESS_TOKEN: !!process.env.NETLIFY_ACCESS_TOKEN
+          NETLIFY_ACCESS_TOKEN: !!process.env.NETLIFY_ACCESS_TOKEN,
+          NETLIFY_ACCOUNT_ID: !!process.env.NETLIFY_ACCOUNT_ID
         }
       })
     };
