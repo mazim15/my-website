@@ -62,28 +62,20 @@ async function deleteExistingPageRules(zoneId, subdomain) {
   }
 }
 
-// Helper function to set Netlify environment variables
-async function setNetlifyEnvVars(siteId, variables) {
-  const url = `${NETLIFY_API_BASE}/accounts/${process.env.NETLIFY_ACCOUNT_ID}/env`;
+// Helper function to set a Netlify environment variable
+async function setNetlifyEnvVar(siteId, key, value) {
+  const url = `${NETLIFY_API_BASE}/sites/${siteId}/env/${key}`;
   const response = await fetch(url, {
-    method: 'POST',
+    method: 'PUT',
     headers: {
       'Authorization': `Bearer ${process.env.NETLIFY_ACCESS_TOKEN}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      site_id: siteId,
-      values: Object.entries(variables).map(([key, value]) => ({
-        key,
-        value,
-        context: 'all'
-      }))
-    })
+    body: JSON.stringify({ value })
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Failed to set Netlify environment variables: ${error}`);
+    throw new Error(`Failed to set Netlify environment variable ${key}`);
   }
 
   return response.json();
@@ -106,8 +98,7 @@ exports.handler = async (event) => {
       AIRTABLE_API_KEY: process.env.AIRTABLE_API_KEY,
       AIRTABLE_BASE_ID: process.env.AIRTABLE_BASE_ID,
       NETLIFY_SITE_ID: process.env.NETLIFY_SITE_ID,
-      NETLIFY_ACCESS_TOKEN: process.env.NETLIFY_ACCESS_TOKEN,
-      NETLIFY_ACCOUNT_ID: process.env.NETLIFY_ACCOUNT_ID
+      NETLIFY_ACCESS_TOKEN: process.env.NETLIFY_ACCESS_TOKEN
     };
 
     for (const [key, value] of Object.entries(requiredEnvVars)) {
@@ -260,7 +251,9 @@ exports.handler = async (event) => {
         };
 
         // Set environment variables in Netlify
-        await setNetlifyEnvVars(process.env.NETLIFY_SITE_ID, envVars);
+        for (const [key, value] of Object.entries(envVars)) {
+          await setNetlifyEnvVar(process.env.NETLIFY_SITE_ID, key, value);
+        }
         console.log(`Created environment variables for ${subdomain}`);
 
         // Update Airtable record to mark subdomain as created
@@ -309,8 +302,7 @@ exports.handler = async (event) => {
           AIRTABLE_API_KEY: !!process.env.AIRTABLE_API_KEY,
           AIRTABLE_BASE_ID: !!process.env.AIRTABLE_BASE_ID,
           NETLIFY_SITE_ID: !!process.env.NETLIFY_SITE_ID,
-          NETLIFY_ACCESS_TOKEN: !!process.env.NETLIFY_ACCESS_TOKEN,
-          NETLIFY_ACCOUNT_ID: !!process.env.NETLIFY_ACCOUNT_ID
+          NETLIFY_ACCESS_TOKEN: !!process.env.NETLIFY_ACCESS_TOKEN
         }
       })
     };
