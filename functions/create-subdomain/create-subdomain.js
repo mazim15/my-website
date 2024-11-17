@@ -6,19 +6,6 @@ const base = new Airtable({
   apiKey: process.env.AIRTABLE_API_KEY
 }).base(process.env.AIRTABLE_BASE_ID);
 
-// Initialize Cloudflare with better error handling
-let cf;
-try {
-  cf = new cloudflare({
-    token: process.env.CLOUDFLARE_API_TOKEN
-  });
-  if (!cf || !cf.dnsRecords) {
-    throw new Error('Cloudflare client not properly initialized');
-  }
-} catch (error) {
-  console.error('Error initializing Cloudflare:', error);
-}
-
 const NETLIFY_SITE_URL = 'plumbingservicesusa.netlify.app'; // Removed https:// as it's not needed for DNS
 const DOMAIN = 'gowso.online'; // Removed https:// as it's not needed for DNS
 
@@ -32,9 +19,41 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Validate Cloudflare initialization
-    if (!cf || !cf.dnsRecords) {
-      throw new Error('Cloudflare client not properly initialized. Please check CLOUDFLARE_API_TOKEN.');
+    // Validate environment variables
+    if (!process.env.CLOUDFLARE_API_TOKEN) {
+      throw new Error('CLOUDFLARE_API_TOKEN is not set');
+    }
+    if (!process.env.CLOUDFLARE_ZONE_ID) {
+      throw new Error('CLOUDFLARE_ZONE_ID is not set');
+    }
+    if (!process.env.AIRTABLE_API_KEY) {
+      throw new Error('AIRTABLE_API_KEY is not set');
+    }
+    if (!process.env.AIRTABLE_BASE_ID) {
+      throw new Error('AIRTABLE_BASE_ID is not set');
+    }
+    if (!process.env.NETLIFY_SITE_ID) {
+      throw new Error('NETLIFY_SITE_ID is not set');
+    }
+    if (!process.env.NETLIFY_ACCESS_TOKEN) {
+      throw new Error('NETLIFY_ACCESS_TOKEN is not set');
+    }
+
+    console.log('Initializing Cloudflare client...');
+    
+    // Initialize Cloudflare with better error handling
+    const cf = new cloudflare({
+      token: process.env.CLOUDFLARE_API_TOKEN
+    });
+
+    // Test Cloudflare client by trying to list DNS records
+    console.log('Testing Cloudflare client...');
+    try {
+      await cf.dnsRecords.browse(process.env.CLOUDFLARE_ZONE_ID);
+      console.log('Cloudflare client initialized successfully');
+    } catch (error) {
+      console.error('Error testing Cloudflare client:', error);
+      throw new Error(`Failed to test Cloudflare client: ${error.message}`);
     }
 
     console.log('Fetching records from Airtable...');
@@ -186,7 +205,15 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         error: 'Failed to process businesses',
         details: error.message,
-        stack: error.stack // Include stack trace for debugging
+        stack: error.stack, // Include stack trace for debugging
+        env: { // Include environment variable status (but not values) for debugging
+          CLOUDFLARE_API_TOKEN: !!process.env.CLOUDFLARE_API_TOKEN,
+          CLOUDFLARE_ZONE_ID: !!process.env.CLOUDFLARE_ZONE_ID,
+          AIRTABLE_API_KEY: !!process.env.AIRTABLE_API_KEY,
+          AIRTABLE_BASE_ID: !!process.env.AIRTABLE_BASE_ID,
+          NETLIFY_SITE_ID: !!process.env.NETLIFY_SITE_ID,
+          NETLIFY_ACCESS_TOKEN: !!process.env.NETLIFY_ACCESS_TOKEN
+        }
       })
     };
   }
