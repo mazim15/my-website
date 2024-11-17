@@ -4,3 +4,5 @@
 
 [functions]
   directory = "functions"
+  node_bundler = "esbuild"
+  included_files = ["functions/businesses.csv"]
