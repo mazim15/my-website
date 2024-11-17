@@ -64,18 +64,25 @@ async function deleteExistingPageRules(zoneId, subdomain) {
 
 // Helper function to set a Netlify environment variable
 async function setNetlifyEnvVar(siteId, key, value) {
-  const url = `${NETLIFY_API_BASE}/sites/${siteId}/env/${key}`;
+  const url = `${NETLIFY_API_BASE}/sites/${siteId}/env`;
   const response = await fetch(url, {
-    method: 'PUT',
+    method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.NETLIFY_ACCESS_TOKEN}`,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ value })
+    body: JSON.stringify({
+      key: key,
+      values: [{
+        value: value,
+        context: "all"
+      }]
+    })
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to set Netlify environment variable ${key}`);
+    const errorText = await response.text();
+    throw new Error(`Failed to set Netlify environment variable ${key}: ${errorText}`);
   }
 
   return response.json();
@@ -252,9 +259,14 @@ exports.handler = async (event) => {
 
         // Set environment variables in Netlify
         for (const [key, value] of Object.entries(envVars)) {
-          await setNetlifyEnvVar(process.env.NETLIFY_SITE_ID, key, value);
+          try {
+            await setNetlifyEnvVar(process.env.NETLIFY_SITE_ID, key, value);
+            console.log(`Successfully set Netlify environment variable: ${key}`);
+          } catch (error) {
+            console.error(`Error setting Netlify environment variable ${key}:`, error);
+            throw error;
+          }
         }
-        console.log(`Created environment variables for ${subdomain}`);
 
         // Update Airtable record to mark subdomain as created
         await base('Businesses').update(record.id, {
