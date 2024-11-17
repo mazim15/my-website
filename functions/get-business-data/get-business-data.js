@@ -1,191 +1,153 @@
-// get-business-data.js
 const Airtable = require('airtable');
 
+// Utility function to sanitize input
 const sanitizeInput = (input) => {
-    // Basic input sanitization
-    return input.replace(/[^a-zA-Z0-9-]/g, '');
+    if (!input) return '';
+    return input.toString().toLowerCase().replace(/[^a-z0-9-]/g, '');
 };
 
-exports.handler = async (event) => {
-    let { business, subdomain } = event.queryStringParameters;
-    
-    // Sanitize inputs
-    business = business ? sanitizeInput(business) : null;
-    subdomain = subdomain ? sanitizeInput(subdomain) : null;
-    
-    if (!business && !subdomain) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ error: 'Business or subdomain parameter is required' })
-        };
-    }
+// Utility function to validate fields exist
+const validateFields = (record) => {
+    const requiredFields = ['business_name', 'address', 'phone', 'maps_url'];
+    const missingFields = requiredFields.filter(field => !record.fields[field]);
+    return {
+        isValid: missingFields.length === 0,
+        missingFields
+    };
+};
+
+exports.handler = async (event, context) => {
+    // Enable CORS
+    const headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET'
+    };
+
+    // Log the incoming request
+    console.log('Incoming request parameters:', event.queryStringParameters);
 
     try {
-        const base = new Airtable({
-            apiKey: process.env.AIRTABLE_API_KEY
-        }).base(process.env.AIRTABLE_BASE_ID);
+        // Get and validate query parameters
+        let { business, subdomain } = event.queryStringParameters || {};
 
-        // Build the filter formula with proper escaping
-        let filterFormula;
-        if (business) {
-            filterFormula = `LOWER({business_name}) = LOWER('${business}')`;
-        } else if (subdomain) {
-            filterFormula = `LOWER({subdomain}) = LOWER('${subdomain}')`;
-        }
+        // Sanitize inputs
+        business = sanitizeInput(business);
+        subdomain = sanitizeInput(subdomain);
 
-        const records = await base('Businesses')
-            .select({
-                filterByFormula: filterFormula,
-                fields: ['business_name', 'address', 'phone', 'maps_url', 'subdomain']
-            })
-            .firstPage();
-
-        if (!records || records.length === 0) {
+        // Check if we have any valid parameters
+        if (!business && !subdomain) {
+            console.log('No valid business or subdomain parameter provided');
             return {
-                statusCode: 404,
-                body: JSON.stringify({ 
-                    error: 'Business not found',
-                    queriedValue: business || subdomain 
+                statusCode: 400,
+                headers,
+                body: JSON.stringify({
+                    error: 'Business or subdomain parameter is required',
+                    timestamp: new Date().toISOString()
                 })
             };
         }
 
-        const data = records[0].fields;
+        // Initialize Airtable
+        const base = new Airtable({
+            apiKey: process.env.AIRTABLE_API_KEY
+        }).base(process.env.AIRTABLE_BASE_ID);
 
-        // Add security headers
-        const headers = {
-            'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGINS || '*',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Methods': 'GET',
-            'Content-Security-Policy': "default-src 'self'; frame-src 'self' https://www.google.com",
-            'X-Content-Type-Options': 'nosniff',
-            'X-Frame-Options': 'SAMEORIGIN',
-            'X-XSS-Protection': '1; mode=block'
+        // Build the filter formula
+        // This will match against business_name and plumbing_name (if it exists)
+        const searchTerm = business || subdomain;
+        const filterFormula = `OR(
+            LOWER({business_name}) = '${searchTerm}',
+            LOWER({plumbing_name}) = '${searchTerm}'
+        )`;
+
+        console.log('Using filter formula:', filterFormula);
+
+        // Query Airtable
+        const records = await base('Businesses')
+            .select({
+                filterByFormula: filterFormula,
+                maxRecords: 1
+            })
+            .firstPage();
+
+        console.log(`Found ${records.length} matching records`);
+
+        // Check if we found any records
+        if (!records || records.length === 0) {
+            console.log('No matching business found for:', searchTerm);
+            return {
+                statusCode: 404,
+                headers,
+                body: JSON.stringify({
+                    error: 'Business not found',
+                    queriedValue: searchTerm,
+                    timestamp: new Date().toISOString()
+                })
+            };
+        }
+
+        // Get the first matching record
+        const record = records[0];
+
+        // Validate required fields
+        const { isValid, missingFields } = validateFields(record);
+        if (!isValid) {
+            console.log('Missing required fields:', missingFields);
+            return {
+                statusCode: 500,
+                headers,
+                body: JSON.stringify({
+                    error: 'Incomplete business data',
+                    missingFields,
+                    timestamp: new Date().toISOString()
+                })
+            };
+        }
+
+        // Extract the fields we want to return
+        const data = {
+            business_name: record.fields.business_name,
+            address: record.fields.address,
+            phone: record.fields.phone,
+            maps_url: record.fields.maps_url,
+            // Include any optional fields if they exist
+            email: record.fields.email || '',
+            description: record.fields.description || '',
+            hours: record.fields.hours || '',
+            services: record.fields.services || [],
+            // Add any additional fields you need
         };
 
+        console.log('Returning data for business:', data.business_name);
+
+        // Return the successful response
         return {
             statusCode: 200,
             headers,
-            body: JSON.stringify(data)
+            body: JSON.stringify({
+                data,
+                timestamp: new Date().toISOString()
+            })
         };
+
     } catch (error) {
-        console.error('Error:', error);
-        
+        // Log the full error for debugging
+        console.error('Error processing request:', error);
+
+        // Determine if it's an Airtable specific error
+        const isAirtableError = error.error && error.error.type;
+
+        // Return an appropriate error response
         return {
-            statusCode: 500,
-            body: JSON.stringify({ 
+            statusCode: isAirtableError ? 503 : 500,
+            headers,
+            body: JSON.stringify({
                 error: 'Failed to fetch business data',
-                details: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+                message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+                type: isAirtableError ? error.error.type : 'GeneralError',
+                timestamp: new Date().toISOString()
             })
         };
     }
 };
-
-// Frontend script for index.html
-const businessDataHandler = {
-    getSubdomain() {
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            // For local development, you might want to use a query parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('business');
-        }
-        
-        const parts = hostname.split('.');
-        return parts.length >= 3 ? parts[0].toLowerCase() : null;
-    },
-
-    async fetchBusinessData() {
-        const subdomain = this.getSubdomain();
-        if (!subdomain) {
-            console.warn('No subdomain found');
-            return null;
-        }
-
-        try {
-            const response = await fetch(`/.netlify/functions/get-business-data?business=${encodeURIComponent(subdomain)}`, {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching business data:', error);
-            this.handleError(error);
-            return null;
-        }
-    },
-
-    replaceContent(data) {
-        if (!data) return;
-
-        // Create a template processor
-        const processTemplate = (text, data) => {
-            return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
-                return data[key] !== undefined ? data[key] : match;
-            });
-        };
-
-        // Process text nodes
-        const walk = document.createTreeWalker(
-            document.body,
-            NodeFilter.SHOW_TEXT,
-            null,
-            false
-        );
-
-        let node;
-        while (node = walk.nextNode()) {
-            const newText = processTemplate(node.textContent, data);
-            if (newText !== node.textContent) {
-                node.textContent = newText;
-            }
-        }
-
-        // Update Google Maps iframe
-        if (data.maps_url) {
-            const mapsIframes = document.querySelectorAll('iframe[src*="google.com/maps"], iframe[data-maps="true"]');
-            mapsIframes.forEach(iframe => {
-                // Validate URL
-                try {
-                    const url = new URL(data.maps_url);
-                    if (url.hostname.includes('google.com')) {
-                        iframe.src = data.maps_url;
-                    }
-                } catch (e) {
-                    console.error('Invalid maps URL:', e);
-                }
-            });
-        }
-    },
-
-    handleError(error) {
-        // Add error handling UI if needed
-        const errorDiv = document.getElementById('error-message') || document.createElement('div');
-        errorDiv.id = 'error-message';
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = 'Unable to load business data. Please try again later.';
-        
-        if (!document.getElementById('error-message')) {
-            document.body.insertBefore(errorDiv, document.body.firstChild);
-        }
-    },
-
-    init() {
-        document.addEventListener('DOMContentLoaded', async () => {
-            const businessData = await this.fetchBusinessData();
-            if (businessData) {
-                this.replaceContent(businessData);
-            }
-        });
-    }
-};
-
-// Initialize the handler
-businessDataHandler.init();
