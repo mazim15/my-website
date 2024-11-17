@@ -46,11 +46,12 @@ exports.handler = async (event) => {
       token: process.env.CLOUDFLARE_API_TOKEN
     });
 
-    // Test Cloudflare client by trying to list DNS records
+    // Test Cloudflare client by trying to list zones
     console.log('Testing Cloudflare client...');
     try {
-      await cf.dnsRecords.browse(process.env.CLOUDFLARE_ZONE_ID);
+      const zones = await cf.zones.read(process.env.CLOUDFLARE_ZONE_ID);
       console.log('Cloudflare client initialized successfully');
+      console.log('Zone info:', zones);
     } catch (error) {
       console.error('Error testing Cloudflare client:', error);
       throw new Error(`Failed to test Cloudflare client: ${error.message}`);
@@ -110,8 +111,8 @@ exports.handler = async (event) => {
 
         console.log(`Creating DNS record for ${subdomain}.${DOMAIN}`);
 
-        // Create DNS record in Cloudflare
-        const dnsResult = await cf.dnsRecords.add(process.env.CLOUDFLARE_ZONE_ID, {
+        // Create DNS record in Cloudflare using zones API
+        const dnsResult = await cf.zones.dnsRecords.add(process.env.CLOUDFLARE_ZONE_ID, {
           type: 'CNAME',
           name: subdomain,
           content: NETLIFY_SITE_URL,
@@ -121,8 +122,8 @@ exports.handler = async (event) => {
 
         console.log('DNS record created:', dnsResult);
 
-        // Create page rule for caching
-        const pageRuleResult = await cf.pageRules.create(process.env.CLOUDFLARE_ZONE_ID, {
+        // Create page rule for caching using zones API
+        const pageRuleResult = await cf.zones.pageRules.add(process.env.CLOUDFLARE_ZONE_ID, {
           targets: [
             {
               target: 'url',
