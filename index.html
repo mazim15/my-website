@@ -12,7 +12,7 @@
 	<link rel="profile" href="https://gmpg.org/xfn/11" />
 	<link rel="pingback" href="https://bridge108.qodeinteractive.com/xmlrpc.php" />
 
-	<title>Home</title>
+	<title>{{business_name}} | Home</title>
 <meta name='robots' content='max-image-preview:large' />
 
     <style>
@@ -917,7 +917,7 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 							return business[key] || match;
 						});
 					} else if (element.nodeType === Node.ELEMENT_NODE) {
-						// Replace attributes like src
+						// Replace attributes like src, href, title, etc.
 						Array.from(element.attributes).forEach(attr => {
 							attr.value = attr.value.replace(regex, (match, key) => {
 								return business[key] || match;
@@ -926,11 +926,12 @@ var qodeLike = {"ajaxurl":"https:\/\/bridge108.qodeinteractive.com\/wp-admin\/ad
 					}
 				}
 		
-				// Start from the body element
-				replaceInElement(document.body);
+				// Start from the document element to include both <head> and <body>
+				replaceInElement(document.documentElement);
 			}
 		});
 		</script>
+		
 		
 </body>
 </html>
