@@ -1,0 +1,832 @@
+[
+    {
+        "Number": "",
+        "Error": "\n\u001b[31m\u001b[49mHTTP Error\u001b[0m \u001b[37m\u001b[49mYour request was:\u001b[0m\n\n\u001b[36m\u001b[49mGET /PhoneNumbers/\u001b[0m\n\n\u001b[37m\u001b[49mTwilio returned the following information:\u001b[0m\n\n\u001b[34m\u001b[49mUnable to fetch record: The requested resource /v2/PhoneNumbers was not found\u001b[0m\n\n\u001b[37m\u001b[49mMore information may be available here:\u001b[0m\n\n\u001b[34m\u001b[49mhttps://www.twilio.com/docs/errors/20404\u001b[0m\n\n"
+    },
+    {
+        "Number": "+1864-446-8911",
+        "Line Type Intelligence": {
+            "carrier_name": "West Carolina Rural Tel. Coop., Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1864-366-9303",
+        "Line Type Intelligence": {
+            "carrier_name": "West Carolina Communications, LLC - SC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1864-348-2211",
+        "Line Type Intelligence": {
+            "carrier_name": "West Carolina Rural Tel. Coop., Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "",
+        "Error": "\n\u001b[31m\u001b[49mHTTP Error\u001b[0m \u001b[37m\u001b[49mYour request was:\u001b[0m\n\n\u001b[36m\u001b[49mGET /PhoneNumbers/\u001b[0m\n\n\u001b[37m\u001b[49mTwilio returned the following information:\u001b[0m\n\n\u001b[34m\u001b[49mUnable to fetch record: The requested resource /v2/PhoneNumbers was not found\u001b[0m\n\n\u001b[37m\u001b[49mMore information may be available here:\u001b[0m\n\n\u001b[34m\u001b[49mhttps://www.twilio.com/docs/errors/20404\u001b[0m\n\n"
+    },
+    {
+        "Number": "+1817-556-1553",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1254-582-9879",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1254-582-5134",
+        "Line Type Intelligence": {
+            "carrier_name": "Bandwidth.com CLEC, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-749-0529",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1254-826-5438",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1254-644-4412",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1903-257-8312",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1254-582-0330",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1903-388-8382",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1469-407-7760",
+        "Line Type Intelligence": {
+            "carrier_name": "T-Mobile USA, Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "160",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1903-796-9586",
+        "Line Type Intelligence": {
+            "carrier_name": "Telnyx LLC",
+            "error_code": null,
+            "mobile_country_code": "311",
+            "mobile_network_code": "210",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-205-0965",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1903-477-5099",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1940-657-4094",
+        "Line Type Intelligence": {
+            "carrier_name": "Windstream Communications - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-826-3450",
+        "Line Type Intelligence": {
+            "carrier_name": "Bandwidth SMSEnabled - Bandwidth CLEC - Sinch",
+            "error_code": null,
+            "mobile_country_code": "313",
+            "mobile_network_code": "981",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1817-453-9550",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1254-694-4406",
+        "Line Type Intelligence": {
+            "carrier_name": "Windstream Communications - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-822-1575",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1972-923-0267",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1972-723-2630",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1817-558-1192",
+        "Line Type Intelligence": {
+            "carrier_name": "Bandwidth/13 - Bandwidth.com - SVR",
+            "error_code": null,
+            "mobile_country_code": "313",
+            "mobile_network_code": "981",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1903-206-4099",
+        "Line Type Intelligence": {
+            "carrier_name": "Twilio - SMS/MMS-SVR",
+            "error_code": null,
+            "mobile_country_code": "311",
+            "mobile_network_code": "950",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1972-476-9975",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1469-807-6525",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1479-461-7538",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1430-236-5913",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1254-277-2617",
+        "Line Type Intelligence": {
+            "carrier_name": "Twilio - SMS/MMS-SVR",
+            "error_code": null,
+            "mobile_country_code": "311",
+            "mobile_network_code": "950",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-235-3897",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1254-276-3535",
+        "Line Type Intelligence": {
+            "carrier_name": "Twilio - SMS/MMS-SVR",
+            "error_code": null,
+            "mobile_country_code": "311",
+            "mobile_network_code": "950",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-714-0013",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T - PSTN",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1254-639-3075",
+        "Line Type Intelligence": {
+            "carrier_name": "Totelcom Communications, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1254-756-3602",
+        "Line Type Intelligence": {
+            "carrier_name": "Time Warner Communications",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1903-849-2719",
+        "Line Type Intelligence": {
+            "carrier_name": "Connect Holding II dba Brightspeed",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1817-304-2761",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1214-417-9998",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-947-0613",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-803-1352",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-610-4486",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-622-9829",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1518-949-0259",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-622-9474",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-734-5539",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "",
+        "Error": "\n\u001b[31m\u001b[49mHTTP Error\u001b[0m \u001b[37m\u001b[49mYour request was:\u001b[0m\n\n\u001b[36m\u001b[49mGET /PhoneNumbers/\u001b[0m\n\n\u001b[37m\u001b[49mTwilio returned the following information:\u001b[0m\n\n\u001b[34m\u001b[49mUnable to fetch record: The requested resource /v2/PhoneNumbers was not found\u001b[0m\n\n\u001b[37m\u001b[49mMore information may be available here:\u001b[0m\n\n\u001b[34m\u001b[49mhttps://www.twilio.com/docs/errors/20404\u001b[0m\n\n"
+    },
+    {
+        "Number": "+1518-943-2307",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1607-386-2440",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-945-2255",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-532-6571",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-821-9431",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-901-1791",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-734-6545",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1518-424-3098",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-443-6926",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-246-3153",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1607-875-4066",
+        "Line Type Intelligence": {
+            "carrier_name": "Charter Fiberlink, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1845-246-2917",
+        "Line Type Intelligence": {
+            "carrier_name": "Charter Fiberlink, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1914-721-3050",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-246-9288",
+        "Line Type Intelligence": {
+            "carrier_name": "Charter Fiberlink, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1518-734-3363",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1518-947-9920",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-292-7557",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-707-3748",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-866-4686",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1585-476-2037",
+        "Line Type Intelligence": {
+            "carrier_name": "Frontier Communications",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1518-756-2302",
+        "Line Type Intelligence": {
+            "carrier_name": "State Tel. Co.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1845-246-3492",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1845-246-3462",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1845-750-6253",
+        "Line Type Intelligence": {
+            "carrier_name": "NUSO, LLC",
+            "error_code": null,
+            "mobile_country_code": "312",
+            "mobile_network_code": "650",
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "",
+        "Error": "\n\u001b[31m\u001b[49mHTTP Error\u001b[0m \u001b[37m\u001b[49mYour request was:\u001b[0m\n\n\u001b[36m\u001b[49mGET /PhoneNumbers/\u001b[0m\n\n\u001b[37m\u001b[49mTwilio returned the following information:\u001b[0m\n\n\u001b[34m\u001b[49mUnable to fetch record: The requested resource /v2/PhoneNumbers was not found\u001b[0m\n\n\u001b[37m\u001b[49mMore information may be available here:\u001b[0m\n\n\u001b[34m\u001b[49mhttps://www.twilio.com/docs/errors/20404\u001b[0m\n\n"
+    },
+    {
+        "Number": "+1518-368-6545",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-392-5388",
+        "Line Type Intelligence": {
+            "carrier_name": "Taconic Tel. Corp.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1929-412-3376",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "012",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1845-246-9288",
+        "Line Type Intelligence": {
+            "carrier_name": "Charter Fiberlink, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "fixedVoip"
+        }
+    },
+    {
+        "Number": "+1607-232-4245",
+        "Line Type Intelligence": {
+            "carrier_name": "T-Mobile USA, Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "160",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-417-8572",
+        "Line Type Intelligence": {
+            "carrier_name": "T-Mobile USA, Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "160",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1518-537-4817",
+        "Line Type Intelligence": {
+            "carrier_name": "Germantown Tel. Co., Inc.",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1518-222-2626",
+        "Line Type Intelligence": {
+            "carrier_name": "AT&T Wireless",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": "170",
+            "type": "mobile"
+        }
+    },
+    {
+        "Number": "+1315-673-3728",
+        "Line Type Intelligence": {
+            "carrier_name": "Bandwidth.com CLEC, LLC",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "+1518-239-6781",
+        "Line Type Intelligence": {
+            "carrier_name": "TVC Albany, Inc. dba FirstLight Fiber",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "nonFixedVoip"
+        }
+    },
+    {
+        "Number": "",
+        "Error": "\n\u001b[31m\u001b[49mHTTP Error\u001b[0m \u001b[37m\u001b[49mYour request was:\u001b[0m\n\n\u001b[36m\u001b[49mGET /PhoneNumbers/\u001b[0m\n\n\u001b[37m\u001b[49mTwilio returned the following information:\u001b[0m\n\n\u001b[34m\u001b[49mUnable to fetch record: The requested resource /v2/PhoneNumbers was not found\u001b[0m\n\n\u001b[37m\u001b[49mMore information may be available here:\u001b[0m\n\n\u001b[34m\u001b[49mhttps://www.twilio.com/docs/errors/20404\u001b[0m\n\n"
+    },
+    {
+        "Number": "+1518-828-1816",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    },
+    {
+        "Number": "+1845-688-5568",
+        "Line Type Intelligence": {
+            "carrier_name": "Verizon",
+            "error_code": null,
+            "mobile_country_code": "310",
+            "mobile_network_code": null,
+            "type": "landline"
+        }
+    }
+]
