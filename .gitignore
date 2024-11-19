@@ -2,4 +2,3 @@ node_modules
 
 # Local Netlify folder
 .netlify
-functions/linetype.py
